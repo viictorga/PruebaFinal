@@ -7,7 +7,7 @@
 
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "ts-node EjercicioClase.ts",
+    "start": "ts-node Ejercicio1Practica.ts",
     "dev": "nodemon --exec ts-node index.ts"
   },
   "keywords": [],
