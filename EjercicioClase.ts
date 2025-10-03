@@ -48,14 +48,36 @@ const getCharacter = (name?: string , status?: string , gender?: string) =>{
     }
     
 
-    getCharacter("rick");
+    //getCharacter("rick");
+
+    /*
+        Hacer una funcion que al pasar un ID reciba en que episodios sale
+    
+    
+    
+    */
+
+const getEpisodes = (id: number) =>{
+
+   const url : string = `https://rickandmortyapi.com/api/character/` + id.toString();
+
+   const promesa2 = axios.get(url);
+
+   promesa2.then((res)=>{
+        let arrayEpisodios : string[] = res.data.episode; // Array<string>
+        console.log(arrayEpisodios);
+
+   }).catch((err)=>{
+    console.error("la acabas de liar chaval", err.message);
+   })
+
+     
 
 
-
+}
         
         
-
-        
+getEpisodes(48);  
 
     
 
