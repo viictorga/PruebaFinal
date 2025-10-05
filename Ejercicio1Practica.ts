@@ -87,7 +87,7 @@ const usuariosDePrueba = [
     { id: 6, name: 'Pedro', username: 'pedrito', email: 'pedro@example.com' }
 ];
 
-console.log(procesarUsuarios(usuariosDePrueba));
+//console.log(procesarUsuarios(usuariosDePrueba));
 
 //Ejercicio 3
 
