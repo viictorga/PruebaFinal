@@ -10,7 +10,7 @@ type Results = {
     origin: {
       name: string,
       url: string,
-    },
+    };
     location: {
       name: string,
       url: string,
