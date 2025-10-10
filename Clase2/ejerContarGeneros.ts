@@ -39,7 +39,7 @@ type Resultado = {
     Others: number
 }
 
-const getGeneros = async(idEpi: number) =>{
+const getGeneros = async(idEpi: number):Promise<Resultado> =>{
     const episodio : Episode = (await (axios.get(`https://rickandmortyapi.com/api/episode/${idEpi}`))).data
 
     const misPersonajes = episodio.characters.map(async(n) =>{
