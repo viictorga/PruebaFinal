@@ -62,17 +62,24 @@ type Episode = {
 
         const nuevo_arrayEpisodios = promesa.episode.map(async(n)=>{
             
-            console.log(n)
+            //console.log(n)
             return (await axios.get(n)).data;
 
         })
 
 
-        const arrayPORFIN = await Promise.all(nuevo_arrayEpisodios)
+        const arrayPORFIN = await Promise.allSettled(nuevo_arrayEpisodios)
+
+        
+        const array2 = arrayPORFIN.map((h) =>{
+            if(h.status === "fulfilled"){
+                return h.value
+            }
+        })
 
         return {
             ...promesa,
-            episode: arrayPORFIN
+            episode: array2
         }
 
         
