@@ -4,11 +4,10 @@
   "description": "",
   "main": "index.js",
   "type": "module",
-
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "ts-node Clase2/EjercicioClase2.ts",
-    "dev": "nodemon --exec ts-node index.ts"
+    "dev": "nodemon --exec ts-node Ejercicio1Practica.ts"
   },
   "keywords": [],
   "author": "",
