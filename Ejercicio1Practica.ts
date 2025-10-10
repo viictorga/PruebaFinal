@@ -13,7 +13,8 @@ console.log(La suma recursiva es: ${resultadoSuma}); // Debería imprimir 15
 
 */
 
-const sumaRecursiva = (arr: number[]): number =>{
+const sumaRecursiva = (arr: number[]): number =>
+{
     
     if(arr.length == 0){
         return 0;
