@@ -2,95 +2,97 @@ import express from "express";
 import cors from "cors";
 
 
-
-const app = express();
+const app = express()
 const port = 3000;
 
 
 
-type Person = {
+app.use(cors())
+app.use(express.json())
+
+type Persona = {
     id:number,
     name:string,
     lastName:string,
-    
+}
+type Error = {
+    error: string,
+    body_error: Persona
 }
 
-let miArray : Person[] = [{id:1, name: "juan", lastName: "jose"}, {id:2, name: "jose", lastName: "perez"}]
-
-
-app.use(cors())
-
+let miArray : Persona[] = [{id:1, name: "juan", lastName: "jose"}, {id:2, name: "jose", lastName: "perez"}, {id:3, name: "jose", lastName: "perez"}]
 
 app.get("/personas", (req, res) =>{
+
     res.json(miArray);
 })
 
 
+app.get("/", (req, res) =>{
+    res.status(200).send("Estas conectado chaval");
+
+})
+
 app.get("/personas/:id", (req, res) =>{
-    const idParams = Number(req.params.id )// idParams es un string, cuidado
-    const buscao = miArray.find((elem)=> elem.id === idParams)
+    const id = Number(req.params.id);
 
-    buscao ? res.json(buscao) : res.status(404).json({
-        error: "La has cagado chaval, esa persona no existe"
-    });
-})
+    const resultado = miArray.filter((n) => n.id === id)
 
-
-
-
-app.get("/", (req, res)=>{
-
-    res.json({
-        message: "Estas conectado capi"
-    })
-
+    resultado ? res.json(resultado) : res.status(404).send("no hay inguna persona con ese id")
 
 })
 
 
+app.post("/personas", (req, res) =>{
+    const ultimoId = miArray.at(-1)?.id;
+    const nuevoId = ultimoId ? ultimoId +1 : 0;
+    const nuevoNombre = req.body.name;
+    const nuevolastName = req.body.lastName;
 
-app.post("/personas/", (req, res) => {
-
-const ultimoId = miArray.at(-1)?.id 
-const nuevoId = ultimoId ? ultimoId +1 : 0;
-const nuevoName = req.body.name;
-const nuevolastName = req.body.lastName;
-    const newPerson: Person = {
-        id : nuevoId,
-        name: nuevoName,
+    const nuevaPersona : Persona = {
+        id: nuevoId,
+        name: nuevoNombre,
         lastName: nuevolastName
     }
-
-
-    if(nuevoName && nuevolastName && typeof(nuevoName) == "string" && typeof(nuevolastName) == "string"){
-        miArray.push(newPerson);
-
-    // miArray.push(req.body)
-        res.status(201).json(newPerson)
+    if(typeof(nuevoNombre) === "string" && typeof(nuevolastName) === "string"){
+        miArray.push(nuevaPersona);
+        res.status(201).json(nuevaPersona);
     }
     else{
-        res.status(404).json({
-            error: "La has cagado creando la nueva persona chaval"
-        })
+        const miErrorcito = {
+            error: "La has cagado chaval, porque uno de los campos de nombro o apellido no es un string o no esta rellenado",
+            body_error: nuevaPersona
+        }
+        res.status(404).json(nuevaPersona) // crear tipo apra representar el error correctamente
     }
-    
-
-});
-
-
-app.put("/persons/:id", (req, res) => {
-    
-    const idParams = Number(req.params.id);
-    miArray = miArray.map((elem) => idParams == elem.id ? {...elem, ...req.body}: elem)
-    res.status(202).send("Personaje Modificado")
 
 })
-app.delete("/persons/:id", (req, res) =>{
+
+
+app.put("/persona/:id", (req,res)=>{
+    const idParams = Number(req.params.id);
+    
+    const seguir = miArray.some((n) => n.id === idParams)
+    if(seguir || typeof(req.body.name) !== "string" || typeof(req.body.lastName) == "string"){
+        res.status(404).send("no podemos cambiar eso chaval, no existe nada con ese id, o has escrito mal el body")
+    }
+
+    miArray = miArray.map((elem)=> idParams == elem.id ? {...elem, ...req.body} : elem) // preguntar porque deconstruir elem
+
+    res.status(201).json(miArray)
+
+})
+app.delete("/persona/:id", (req, res) =>{
+    const idParams = Number(req.params.id);
+    
+    const seguir = miArray.some((n) => n.id === idParams)
+    if(seguir){
+        res.status(404).send("no podemos eliminar eso chaval")
+    }
     miArray = miArray.filter((elem) => elem.id !== Number(req.body.id))
     res.status(201).send("Personaje eliminado");
 })
 
-
-
-
 app.listen(port, ()=>{console.log("esto funciona y esta en el puerto 3000")})
+
+
