@@ -6,8 +6,8 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "ts-node Clase3/Clase33.ts",
-    "dev": "nodemon --exec ts-node Ejercicio1Practica.ts"
+    "dev": "nodemon --exec ts-node Ejercicio1Practica.ts",
+    "start": "ts-node Clase3/ejerOpcional.ts"
   },
   "keywords": [],
   "author": "",
