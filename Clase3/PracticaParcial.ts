@@ -77,19 +77,17 @@ app.put("/teams/:id", (req,res) =>{
         res.status(404).json({message: "Alguno de los valores del body no es correcto"})
     }
     
-    teams.map((n)=>{
+    teams = teams.map((n)=>{
         if(n.id === idTeam){
            n = {
                 ...n, ...req.body
            } 
-           return n;
+           
         }
-        else{
-            return n;
-        }
+        return n;
         
     })
-    res.status(202).json(teams);
+    res.status(203).json(teams);
 })
 
 app.delete("/teams/:id", (req, res)=>{
@@ -128,7 +126,7 @@ const testAPI = async()=>{
     const miPromesa2 = (await(axios.get<Team[]>("http://localhost:3000/teams"))).data
     console.log(miPromesa2);
 
-    const team : Team | undefined= miPromesa2.find((n)=> crear.name === n.name && crear.city === n.city && crear.titles === n.titles)
+    const team : Team | undefined = miPromesa2.find((n)=> crear.name === n.name && crear.city === n.city && crear.titles === n.titles)
 
     let idComprobar : number = 0;
     team ? idComprobar = team.id : console.log("No se ha encontrado el id del equipo creado");
