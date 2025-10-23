@@ -46,14 +46,16 @@ app.post("/teams", (req, res)=>{
     const newName = req.body.name
     const newCity = req.body.city
     const newTitles = Number(req.body.titles)
-    const nuevoTeam : Team= {
+   
+    
+    if(typeof(newId) == "number" && typeof(newName) == "string" && typeof(newCity) == "string" && typeof(newTitles) == "number"){
+        const nuevoTeam : Team= {
         id: newId,
         name: newName,
         city:newCity,
         titles: newTitles
 
     }
-    if(typeof(newId) == "number" && typeof(newName) == "string" && typeof(newCity) == "string" && typeof(newTitles) == "number"){
         teams.push(nuevoTeam)
         res.status(201).json(teams);
     }
@@ -76,7 +78,7 @@ app.delete("/teams/:id", (req, res)=>{
     res.status(201).send("Eliminado correctamente")
 })
 
-app.listen(3000, () => console.log("Servidor en http://localhost:3000"));
+app.listen(port, () => console.log("Servidor en http://localhost:3000"));
 
 
 

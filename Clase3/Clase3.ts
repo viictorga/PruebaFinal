@@ -63,7 +63,7 @@ app.post("/personas", (req, res) =>{
             error: "La has cagado chaval, porque uno de los campos de nombro o apellido no es un string o no esta rellenado",
             body_error: nuevaPersona
         }
-        res.status(404).json(nuevaPersona) // crear tipo apra representar el error correctamente
+        res.status(404).json(nuevaPersona) // crear tipo apra representar el error correctamente, preguntarle si organizamos tanto el error
     }
 
 })
@@ -77,7 +77,7 @@ app.put("/persona/:id", (req,res)=>{
         res.status(404).send("no podemos cambiar eso chaval, no existe nada con ese id, o has escrito mal el body")
     }
 
-    miArray = miArray.map((elem)=> idParams == elem.id ? {...elem, ...req.body} : elem) // preguntar porque deconstruir elem
+    miArray = miArray.map((elem)=> idParams == elem.id ? {...elem, ...req.body} : elem) 
 
     res.status(201).json(miArray)
 
