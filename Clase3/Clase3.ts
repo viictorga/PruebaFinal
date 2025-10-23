@@ -73,7 +73,7 @@ app.put("/persona/:id", (req,res)=>{
     const idParams = Number(req.params.id);
     
     const seguir = miArray.some((n) => n.id === idParams)
-    if(seguir || typeof(req.body.name) !== "string" || typeof(req.body.lastName) == "string"){
+    if(!seguir || typeof(req.body.name) !== "string" || typeof(req.body.lastName) !== "string"){
         res.status(404).send("no podemos cambiar eso chaval, no existe nada con ese id, o has escrito mal el body")
     }
 
@@ -86,7 +86,7 @@ app.delete("/persona/:id", (req, res) =>{
     const idParams = Number(req.params.id);
     
     const seguir = miArray.some((n) => n.id === idParams)
-    if(seguir){
+    if(!seguir){
         res.status(404).send("no podemos eliminar eso chaval")
     }
     miArray = miArray.filter((elem) => elem.id !== Number(req.body.id))
