@@ -1,6 +1,6 @@
 import axios from "axios"
-import express from "express"
-import cors from "cors"
+import express from "../Clase4/node_modules/@types/express"
+import cors from "../Clase4/node_modules/@types/cors"
 
 
 const app = express()
