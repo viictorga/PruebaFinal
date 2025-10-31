@@ -8,10 +8,12 @@ let db: Db;
 export const connectToMongoDB = async (): Promise<void>=>{
     try {
         console.log("funcion ejecutandose")
-        const urlMongo = "mongodb+srv://kirk:patataEspacial@mongomake.3ta2r.mongodb.net/?appName=MongoMake"
-        client = new MongoClient(urlMongo);
+        const urlMongoProfe = "mongodb+srv://kirk:patataEspacial@mongomake.3ta2r.mongodb.net/?appName=MongoMake"
+        const urlMongoMio = "mongodb+srv://1234:1234@cluster1.l0zqfnc.mongodb.net/?appName=Cluster1"
+        client = new MongoClient(urlMongoMio);
         await client.connect();
-        db = client.db("Vicio")
+        // Vicio
+        db = client.db("sample_supplies")
         console.log("veeeenga chaval, estas conectado a mongo");
         
     } catch (error) {

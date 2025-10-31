@@ -2,7 +2,7 @@ import {Router} from "express"
 import {getDB} from "./mongo"
 
 const router = Router()
-const coleccion = () => getDB().collection("Prueba1");
+const coleccion = () => getDB().collection("sales");
 
 router.get("/", async (req, res) =>{
     try {
