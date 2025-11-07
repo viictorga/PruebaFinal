@@ -58,7 +58,7 @@ router.delete("/:id", async (req,res)=>{
         const resultado = await coleccion().deleteOne({
             _id: new ObjectId(req.params.id)
         })
-        resultado ? res.status(204).json({message: "eliminado, no me tengo que ir a magisterio, por ahora"}) : res.status(404).json({error: "no se encontro el id para borrarlo"})
+        resultado ? res.status(203).json({message: "eliminado, no me tengo que ir a magisterio, por ahora"}) : res.status(404).json({error: "no se encontro el id para borrarlo"})
 
     
     } catch (error) {
