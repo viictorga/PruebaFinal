@@ -32,6 +32,10 @@ const comprobarObjBD = (miObjeto: any): boolean => {
     return false;
     
 }
+
+
+
+
 router.get("/", async(req,res)=>{
     try { // $ todo delante, eq == , neq !=, gT >, gTe >=, lt <, lte <=, in (dentro de), nin 
         const resultado1 : Resultado = {
@@ -113,7 +117,6 @@ router.post("/many" , async(req,res)=>{
        if (comprobacion){
         console.log("conseguimos entrar")
           const nuevoLibro : Objeto = {
-            
             titulo: elem.titulo,
             autor: elem.autor,
             paginas: elem.paginas
@@ -141,14 +144,16 @@ router.put("/:id", async (req,res)=>{
     try {
         const comprobar = comprobarObjBD(req.body);
         if(comprobar){
-
+            const resultado = await coleccion().updateOne(
+            {_id: new ObjectId(req.params.id)}, 
+            {$set: req.body})
+        resultado ? res.status(202).json(resultado) : res.status(404).json({error: "no se ha encontrado el id"})
+        }
+        else{
+            res.status(404).json({error: "el body no cumple con los parametros que tiene un libro"})
         }
 
-        const resultado = await coleccion().updateOne(
-            {_id: new ObjectId(req.params.id)}, 
-            {$set: req.body}
-        )
-        resultado ? res.status(202).json(resultado) : res.status(404).json({error: "no se ha encontrado el id"})
+       
     } catch (error) {
         res.status(404).json({error: "entrastes por el catch del put, lno se actualizo nah"})
     }
@@ -156,25 +161,17 @@ router.put("/:id", async (req,res)=>{
 
 
 router.delete("/:id", async (req,res)=>{
-
     try {
         const resultado = await coleccion().deleteOne({
             _id: new ObjectId(req.params.id)
         })
         resultado ? res.status(203).json({message: "eliminado, no me tengo que ir a magisterio, por ahora"}) : res.status(404).json({error: "no se encontro el id para borrarlo"})
 
-    
     } catch (error) {
         res.status(404).json({error: "no se ha borrado nah, la has liado"})
 
     }
-    
 })
-
-
-
-
-
 
 
 export default router;
