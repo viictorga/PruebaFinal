@@ -16,7 +16,7 @@ export const connectToMongoDB = async (): Promise<void>=>{
         client = new MongoClient(urlMongoMio);
         await client.connect();
         // db = client.db("Vicio")
-        db = client.db("Practica3")
+        db = client.db("EjerClase6")
         //db = client.db("sample_supplies")
         console.log("veeeenga chaval, estas conectado a mongo");
         
