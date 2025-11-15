@@ -46,7 +46,7 @@ router.post("/register", async (req,res)=>{
         }
         const passToEncripta = await bcrypt.hash(passwordHash,10);
         const fechaActual: Date = new Date();
-        await users.insertOne({username, email, passwordHash: passToEncripta, createdAt: fechaActual});
+        await users.insertOne({username, email, passwordHash: passToEncripta});
 
         res.status(201).json({message: "User created"});
 
@@ -58,6 +58,8 @@ router.post("/register", async (req,res)=>{
 
 router.post("/login", async(req, res)=>{
     try{
+
+        
         const {email, passwordHash} = req.body as User
        
 
