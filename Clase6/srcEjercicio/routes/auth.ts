@@ -36,18 +36,19 @@ router.post("/register", async (req,res)=>{
         if(!passwordHash || typeof passwordHash !== "string"){
             return res.status(400).json({message: "Campo 'password' es obligatorio y debe ser string"});
         }
-       
         const users = await coleccion();
 
-        const existing = await(users.find({email})) // esto es como email: email
+        const existing = await(users.findOne({email: email})) // esto es como email: email
 
-        if(existing){
-            return res.status(409).json({error: "conflict, un usuario ya existe con este email"})
-        }
+        // if(existing){
+        //     console.log(users);
+        //     console.log(existing);
+        //     return res.status(409).json({error: "conflict, un usuario ya existe con este email"})
+        // }
+
         const passToEncripta = await bcrypt.hash(passwordHash,10);
-        const fechaActual: Date = new Date();
+      
         await users.insertOne({username, email, passwordHash: passToEncripta});
-
         res.status(201).json({message: "User created"});
 
         
@@ -90,7 +91,7 @@ router.post("/login", async(req, res)=>{
 
         
 
-        res.status(200).json({ token: token})
+        res.status(200).json({ token: "Bearer " + token})
 
     }catch(err){
         res.status(404).json({message: err});
