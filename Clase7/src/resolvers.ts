@@ -32,7 +32,7 @@ export const resolvers : IResolvers={
 
     Query: {
         getAlbums: ()=> albumes,
-        getAlbum:(_, {id}) => albumes.find( x => x.id === id)
+        getAlbum:(_, {id}: {id: string}) => albumes.find( x => x.id === id)
     },
 
     Mutation:{

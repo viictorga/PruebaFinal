@@ -2,6 +2,7 @@ import { ApolloServer } from "apollo-server";
 import { connectToMongoDB } from "./db/mongo"
 import { typeDefs } from "./graphql/schema";
 import { resolvers } from "./graphql/resolvers";
+import { getUserFromToken } from "./auth";
 
 const start = async () =>{
     await connectToMongoDB();
@@ -9,12 +10,14 @@ const start = async () =>{
     typeDefs,
     resolvers,
     context: async ({ req }) => {
-        return { req };
+      const authHeader = req.headers.authorization;
+      const user = authHeader ? await getUserFromToken(authHeader!) : null
+      return {user};
     },
   });
 
   await server.listen({ port: 4000 });
-  console.log("GraphQL funcionando baby");
+  console.log("GraphQL funcionando baby, con auth");
 };
 
 
