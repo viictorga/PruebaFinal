@@ -1,64 +1,104 @@
-import { IResolvers } from "@graphql-tools/utils"
-import { VideoGame } from "../types/VideoGame";
-import { getDB } from "../db/mongo";
 import { ObjectId } from "mongodb";
+import { getDB } from "../db/mongo"
+import { IResolvers } from "@graphql-tools/utils";
+import { UserVideoGame } from "../types/Users";
 import { createUser, validateUser } from "../collections/users";
 import { signToken } from "../auth";
+import { VideoGame } from "../types/VideoGame";
 
-const coleccion = "videojuegoss"
+const nameCollection = "VideoGames";
+const COLLECTION_USERS = "usersVideoGames";
 
-let db = getDB();
-
-const coleccionVideojuegos = ()=> db.collection("videojuegoss");
-
-
-
-export const resolvers : IResolvers={
-
-    Query: {
-        getVideoGames: async()=>{
-            const mi_coleccion = coleccionVideojuegos();
-            return mi_coleccion.find().toArray();
-        },
-        getVideoGame: async(_, {_id}: {_id:string})=>{
-            const db = getDB();
-            return db.collection(coleccion).findOne({_id: new ObjectId(_id)});
-        },
-        me: async(__,_,{user}) => {
-            if(!user) return null;
-            return {
-                id: user._id.toString(),
-                email: user.email
-            }
-        }
+export const resolvers: IResolvers = {
+  Query: {
+    videoGames: async () => {
+      const db = getDB();
+      return db.collection(nameCollection).find().toArray();
     },
 
-    Mutation:{
-        addVideoGame: async(_, {name,platform,releaseYear} : {name:string, platform: string, releaseYear: number})=>{
-            const db = getDB();
+    videoGame: async (_, { id }) => {
+      const db = getDB();
+      return db.collection(nameCollection).findOne({ _id: new ObjectId(id) });
+    },
+    me: async (_, __, { user }) => {
+      if (!user) return null;
+      return {
+        _id: user._id.toString(),
+        email: user.email,
+        videoGameLibrary: user.videoGameLibrary || [],
+      };
+    },
+  },
 
-            const juego : VideoGame ={
-                name,
-                platform,
-                releaseYear
-            } 
-           const result = await db.collection(coleccion).insertOne({juego});
+  User: {
+    videoGameLibrary: async (parent: UserVideoGame) => {
+      const db = getDB();
+      const listaDeIdsDeVideojuegos = parent.videoGameLibrary;
+      const objectIds = listaDeIdsDeVideojuegos.map((id) => new ObjectId(id));
+      return db
+        .collection(nameCollection)
+        .find({ _id: { $in: objectIds } })
+        .toArray();
+    },
+  },
 
-            return {
-                _id: result.insertedId,
-                name,
-                platform,
-                releaseYear
-            }
-        },
-        register: async(_, {email, password}) =>{
-            const userId = await createUser(email,password);
-            return await signToken(userId);
-        },
-        login: async(_, {email, password})=>{
-            const user = await validateUser(email, password);
-            if(!user) throw new Error("esos credenciales te los has inventado, makina");
-            return await signToken(user._id.toString())
+  Mutation: {
+    addVideoGame: async (_, { name, platform, date }) => {
+      const db = getDB();
+      const result = await db.collection(nameCollection).insertOne({
+        name,
+        platform,
+        date,
+      });
+      return {
+        _id: result.insertedId,
+        name,
+        platform,
+        date,
+      };
+    },
+    register: async (
+      _,
+      { email, password }: { email: string; password: string }
+    ) => {
+      const userId = await createUser(email, password);
+      return signToken(userId);
+    },
+    login: async (
+      _,
+      { email, password }: { email: string; password: string }
+    ) => {
+      const user = await validateUser(email, password);
+      if (!user) throw new Error("Invalid credentials");
+      return signToken(user._id.toString());
+    },
+    addVideoGameToMyLibrary: async (
+      _,
+      { videoGameId }: { videoGameId: string },
+      { user }
+    ) => {
+      if (!user) throw new Error("No eres nadie Juan de las Nieves");
+      const db = getDB();
+      const userId = new ObjectId(user._id);
+      const videoGameIdObjetitoMongo = new ObjectId(videoGameId);
+
+      const videoGame = await db
+        .collection(nameCollection)
+        .findOne({ _id: videoGameIdObjetitoMongo });
+      if (!videoGame) throw new Error("El videojuego no existe");
+
+      await db.collection(COLLECTION_USERS).updateOne(
+        { _id: userId },
+        {
+          $addToSet: { videoGameLibrary: videoGameId },
         }
-    }
-}
+      );
+
+      const updateUser = await db.collection(COLLECTION_USERS).findOne({
+        _id: userId,
+      });
+
+      return updateUser;
+    },
+  },
+};

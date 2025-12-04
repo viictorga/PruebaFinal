@@ -1,40 +1,37 @@
 import { ObjectId } from "mongodb";
-import { getDB } from "../db/mongo"
+import { getDB } from "../db/mongo";
 import bcrypt from "bcryptjs";
 
 
 
-const coleccion = "users";
+const COLLECTION = "usersVideoGames";
 
 
-
-export const createUser = async(email: string, password: string) =>{
+export const createUser = async (email: string, password: string) => {
     const db = getDB();
-    const passEncriptada = await bcrypt.hash(password,10);
+    const toEncriptao = await bcrypt.hash(password, 10);
 
-    const result = await db.collection(coleccion).insertOne({
+    const result = await db.collection(COLLECTION).insertOne({
         email,
-        password: passEncriptada
-    })
+        password: toEncriptao
+    });
 
     return result.insertedId.toString();
 }
 
-export const validateUser = async(email:string, password: string) =>{
+export const validateUser = async (email: string, password: string) => {
     const db = getDB();
-    const user = await db.collection(coleccion).findOne({email});
+    const user = await db.collection(COLLECTION).findOne({email});
+    if( !user ) return null;
 
-    if(!user) {
-        return null;
-    }
-    const contraseñaCorrecta = await bcrypt.compare(password, user.password)
-    if(!contraseñaCorrecta) return null;
+    const laPassEsLaMismaMismita = await bcrypt.compare(password, user.password);
+    if(!laPassEsLaMismaMismita) return null;
 
     return user;
-}
+};
 
 
-export const findUserById = async(id: string) =>{
+export const findUserById = async (id: string) => {
     const db = getDB();
-    return await db.collection(coleccion).findOne({_id: new ObjectId(id)})
+    return await db.collection(COLLECTION).findOne({_id: new ObjectId(id)})
 }
